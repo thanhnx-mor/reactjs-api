@@ -1,6 +1,7 @@
 import React from "react";
 import HomePage from "./pages/HomePage/HomePage";
 import ProductListPage from "./pages/ProductListPage/ProductListPage";
+import ProductActionPage from "./pages/ProductActionPage/ProductActionPage";
 import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
 
 const routes = [
@@ -10,9 +11,19 @@ const routes = [
 		main: () => <HomePage />
 	},
 	{
-		path: '/san-pham',
-		exact: false,
+		path: '/product-list',
+		exact: true,
 		main: () => <ProductListPage />
+	},
+	{
+		path: '/products/add',
+		exact: false,
+		main: ({history}) => <ProductActionPage  history={history}/>
+	},
+	{
+		path: '/products/:id/edit',
+		exact: false,
+		main: ({match}) => <ProductActionPage match={match}/>
 	},
 	{
 		path: '',

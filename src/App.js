@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import './App.css';
 import Menu from "./components/Menu/Menu";
-import Products from "./components/Products/Products";
 import routes from "./routes";
 import { Route, Switch, BrowserRouter as Router } from "react-router-dom"
-
 class App extends Component {
   render() {
     return (
@@ -12,13 +10,9 @@ class App extends Component {
         <div>
           <Menu />
           <div className="container">
-           {/* <div className="row">
-              <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <button type="button" className="btn btn-primary">Add product</button>
-                <Products/>
-              </div>
-            </div>*/}
-            {this.showContentMenu(routes)}
+            <div className="row">
+              {this.showContentMenu(routes)}
+            </div>
           </div>
         </div>
       </Router>
