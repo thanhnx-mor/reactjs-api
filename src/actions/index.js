@@ -40,7 +40,6 @@ export const deleteProductRequest = (id) => {
     return callAPI(`/products/${id}`, "DELETE", null)
       .then((res) => {
        let data = res.data
-       console.log(data, 'data')
         dispatch(deleteProduct(data.id))
       })
   }
@@ -53,7 +52,33 @@ export const deleteProduct = (id) => {
   }
 }
 
-export const  getDetailProduct  = async (id) => {
-  let res = await callAPI(`/products/${id}`, "GET", null)
-  await res
+export const  getDetailProduct  = (id) => {
+  return (dispatch) => {
+    return callAPI(`/products/${id}`, "GET", null)
+      .then((res) => {
+        dispatch(setProductEditting(res.data))
+      })
+  }
+}
+export const setProductEditting = (product) => {
+  return {
+    type: Types.EDIT_PRODUCT,
+    product
+  }
+}
+
+
+export const updateProductRequest = (product) => {
+  return (dispatch) => {
+    return callAPI(`/products/${product.id}`, "PUT", product)
+      .then((res) => {
+        dispatch(setProductUpdate(res.data))
+      })
+  }
+}
+export const setProductUpdate = (product) => {
+  return {
+    type: Types.UPDATE_PRODUCT,
+    product
+  }
 }

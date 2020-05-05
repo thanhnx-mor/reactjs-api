@@ -2,8 +2,7 @@ import * as Types from "./../const/actionTypes"
 import helpers from "./../utils/index"
 var initialState = []
 const Products = (state = initialState, action) => {
-  let index
-  let id
+  let index, id
   switch (action.type) {
     case Types.FECTH_PRODUCTS :
       state = action.products
@@ -15,6 +14,12 @@ const Products = (state = initialState, action) => {
       id = action.id
       index = helpers.findIndex(id, state)
       state.splice(index, 1)
+      return [...state]
+    
+    case Types.UPDATE_PRODUCT :
+      id = action.product.id
+      index = helpers.findIndex(id, state)
+      state[index] = action.product
       return [...state]
     default: return [...state]
   }

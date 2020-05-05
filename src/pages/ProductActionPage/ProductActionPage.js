@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import { addProductRequest, getDetailProduct } from "../../actions";
+import {addProductRequest, getDetailProduct, updateProductRequest} from "../../actions";
 import { connect } from "react-redux"
 import { Link } from "react-router-dom";
+import history from "history"
 
 class ProductActionPage extends Component {
 	constructor(props) {
@@ -14,20 +15,28 @@ class ProductActionPage extends Component {
 		}
 	}
 	componentDidMount() {
-		let { id } = this.props.match.params
-		if ( id ) {
+		if ( this.props.match ) {
+			let { id } = this.props.match.params
 			this.props.getDetailProduct(id)
-				.then((res) => {
-					console.log(res)
-				})
 		}
 	}
-
-	onChange = (e) => {
+	componentWillReceiveProps(nextProps, nextContext) {
+		if ( nextProps && nextProps.productEditting ) {
+			let { productEditting } = nextProps
+			this.setState({
+				id: productEditting.id,
+				txtName: productEditting.name,
+				txtPrice: productEditting.price,
+				chkbStatus: productEditting.status
+			})
+		}
+	}
+	
+	onChange = async (e) => {
 		let target = e.target
 		let name = target.name
 		let value = target.type === 'checkbox' ? target.checked : target.value
-		this.setState({
+		await this.setState({
 			[name]: value
 		})
 	}
@@ -36,16 +45,21 @@ class ProductActionPage extends Component {
 		e.preventDefault();
 		let { id, txtName, txtPrice, chkbStatus } = this.state
 		let product = {
-			id: '',
+			id: id,
 			name: txtName,
 			price: txtPrice,
 			status: chkbStatus
 		}
-		this.props.addProductRequest(product)
-		history.goBack();
+		if (id) {
+			this.props.updateProductRequest(product)
+		} else {
+			this.props.addProductRequest(product)
+		}
+		history.push('/product-list')
 	}
 
 	render() {
+		let { txtName, txtPrice, chkbStatus } =  this.state
 		return (
 			<div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 				<form onSubmit={this.onHandleSubmit}>
@@ -56,6 +70,7 @@ class ProductActionPage extends Component {
 							className="form-control"
 							name="txtName"
 							onChange={this.onChange}
+							value={txtName}
 						/>
 					</div>
 					<div className="form-group">
@@ -65,6 +80,7 @@ class ProductActionPage extends Component {
 							className="form-control"
 							name="txtPrice"
 							onChange={this.onChange}
+							value={txtPrice}
 						/>
 					</div>
 					<div className="form-control">
@@ -75,6 +91,7 @@ class ProductActionPage extends Component {
 							<input type="checkbox"
 										 name="chkbStatus"
 										 onChange={this.onChange}
+							       checked={chkbStatus}
 							/>
 							Còn hàng
 						</label>
@@ -93,7 +110,15 @@ const mapDispatchToProps  = (dispatch, props) => {
 		},
 		getDetailProduct: (id) => {
 			dispatch(getDetailProduct(id))
+		},
+		updateProductRequest: (product) => {
+			dispatch(updateProductRequest(product))
 		}
 	}
 }
-export default connect(null, mapDispatchToProps)(ProductActionPage)
+const mapStateToProps = state => {
+	return {
+		productEditting: state.productEditting
+	}
+}
+export default connect(mapStateToProps, mapDispatchToProps)(ProductActionPage)
